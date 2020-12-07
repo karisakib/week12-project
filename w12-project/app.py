@@ -17,20 +17,16 @@ class Database(db.Model):
     # country = db.Column(db.String(255), nullable=False)
     # percentage = db.Column(db.String(255), nullable=False)
     row = db.Column(db.String(255), nullable=False)
-    
-    def __init__(self):
-        self.id = id
-        self.row = row
 
     def __repr__(self):
         # return f"<Data {self.id} {self.rank} {self.company} {self.percentage}>"
         return f"<Data {self.id} {self.row}>" 
 
-    def add_to_db():
-
-
 @app.route('/')
 def home():
+    for row in data:
+            db.session.add(row)
+            db.session.commit()
     dat = Database.query.all()
     return render_template('index.html', rows = dat)
 
