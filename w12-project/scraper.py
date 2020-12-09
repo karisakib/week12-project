@@ -1,38 +1,27 @@
+from app import db, Database
+from bs4 import BeautifulSoup 
 import requests
-from bs4 import BeautifulSoup
 
-url = "https://en.wikipedia.org/wiki/Top_contributors_to_greenhouse_gas_emissions"
-
-req = requests.get(url)
-soup = BeautifulSoup(req.text, 'html.parser')
+r = requests.get("https://en.wikipedia.org/wiki/Top_contributors_to_greenhouse_gas_emissions")
+soup = BeautifulSoup(r.text, features="html.parser")
 table = soup.find('table')
-lst = []
-full = []
+rows = table.find_all("tr")
 
-def scrape():
-    for item in table.find_all('td'):
-        lst.append(item.text[:-1])
+clean_data = []
+for row in rows[1:]:
+    link = row.find('a')["href"]
+    stripped_list = list(row.stripped_strings)
+    stripped_list.append(link)    
+    clean_data.append(stripped_list)
 
-    i = 0
-    j = 0
-    k = 1
-    m = 2
-    n = 3
-    try:
-        for i in range(0, len(lst)-3):
-            full.append(f"{lst[j]} {lst[k]} {lst[m]} {lst[n]}")
-            i += 1
-            j += 4
-            k += 4
-            m += 4
-            n += 4
-    except IndexError:
-        print('e')
-        
-    print(full[:20])
+def main():
+    db.drop_all()
+    db.create_all()
 
-    # for i in full[:20]:
-    #     print(i)
+    for row in clean_data:
+        new_row = Database(rank=row[0], company=row[1], country=row[2], percentage=row[4])
+        db.session.add(new_row)
+        db.session.commit()
 
 if __name__ == "__main__":
-    scrape()
+    main()

@@ -1,20 +1,25 @@
 <!doctype html>
 <html>
-  <head>
-    <title>{% block title %}Welcome to  my house{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  </head>
-  <body>
-    <header>
-      {% block header %}
-      Welcome to my Page
-      {% endblock %}
-    </header>
-    <br>test
-    {% for row in rows %}
-        {{row}}
-        <br>
-    {% endfor %}
-    <br>
-    test
+
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" media="screen" />
+</head>
+
+<body>
+    {% extends "base.html" %}
+
+    {% block body %}
+    <div>
+        {% for row in data %}
+            <div>
+                <h1>{{row.rank}}: {{row.country}}</h1>
+                <p>{{row.company}}</p>
+                <p>{{row.percentage}}</p>
+            </div>
+        {% endfor %}
+    </div>
+    {% endblock %}
 </body>
+
+</html>
